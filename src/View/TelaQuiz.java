@@ -107,10 +107,22 @@ public class TelaQuiz extends TelaBase {
     private void selecionarAlternativa(int indice) {
         setBotoesHabilitados(false);
 
+        Pergunta perguntaRespondida = controller.obterPerguntaAtual();
         boolean acertou = controller.responder(indice);
+        String explicacao = perguntaRespondida.getExplicacao(indice);
 
-        String mensagem = acertou ? "Você acertou!" : "Você errou.";
-        JOptionPane.showMessageDialog(this, mensagem, "Resultado", JOptionPane.INFORMATION_MESSAGE);
+        String titulo = acertou ? "Você acertou!" : "Você errou.";
+
+        JTextArea areaMensagem = new JTextArea(explicacao != null ? explicacao : "");
+        areaMensagem.setEditable(false);
+        areaMensagem.setFocusable(false);
+        areaMensagem.setLineWrap(true);
+        areaMensagem.setWrapStyleWord(true);
+        areaMensagem.setFont(FONTE_TEXTO);
+        areaMensagem.setBackground(getBackground());
+        areaMensagem.setPreferredSize(new Dimension(320, 100));
+
+        JOptionPane.showMessageDialog(this, areaMensagem, titulo, JOptionPane.INFORMATION_MESSAGE);
 
         atualizarTela();
     }
