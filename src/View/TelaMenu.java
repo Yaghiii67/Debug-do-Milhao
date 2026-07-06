@@ -1,38 +1,51 @@
 package View;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.LayoutManager;
+import javax.swing.Box;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 public class TelaMenu extends TelaBase {
-
     public TelaMenu() {
         super("Debug do Milhão - Menu Principal");
     }
 
-    @Override
     protected void montarConteudo() {
         JPanel painel = new JPanel();
-        painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
-        painel.setBorder(BorderFactory.createEmptyBorder(60, 60, 60, 60));
-
-        JLabel titulo = new JLabel("Debug do Milhão");
-        titulo.setFont(FONTE_TITULO);
-        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+        painel.setOpaque(false);
+        painel.setLayout((LayoutManager)null);
+        ImageIcon logoOriginal = new ImageIcon(this.getClass().getResource("/imagens/logo.png"));
+        Image logo = logoOriginal.getImage().getScaledInstance(340, 180, 4);
+        JLabel titulo = new JLabel(new ImageIcon(logo));
+        titulo.setBounds(60, 10, 380, 170);
+        painel.add(titulo);
+        ImageIcon professoraOriginal = new ImageIcon(this.getClass().getResource("/imagens/professora.png"));
+        Image professora = professoraOriginal.getImage().getScaledInstance(220, 320, 4);
+        JLabel lblProfessora = new JLabel(new ImageIcon(professora));
+        lblProfessora.setBounds(520, 130, 270, 340);
+        painel.add(lblProfessora);
         JButton btnJogar = new JButton("Jogar");
         JButton btnCreditos = new JButton("Créditos");
         JButton btnSair = new JButton("Sair");
 
-        for (JButton botao : new JButton[]{btnJogar, btnCreditos, btnSair}) {
+        for(JButton botao : new JButton[]{btnJogar, btnCreditos, btnSair}) {
             botao.setFont(FONTE_BOTAO);
-            botao.setAlignmentX(Component.CENTER_ALIGNMENT);
-            botao.setMaximumSize(new Dimension(200, 40));
         }
 
-        btnJogar.addActionListener(e -> abrirTelaModoJogo());
-        btnCreditos.addActionListener(e -> abrirTelaCreditos());
-        btnSair.addActionListener(e -> System.exit(0));
-
+        btnJogar.setBounds(170, 220, 180, 45);
+        btnCreditos.setBounds(170, 280, 180, 45);
+        btnSair.setBounds(170, 340, 180, 45);
+        painel.add(btnJogar);
+        painel.add(btnCreditos);
+        painel.add(btnSair);
+        btnJogar.addActionListener((e) -> this.abrirTelaModoJogo());
+        btnCreditos.addActionListener((e) -> this.abrirTelaCreditos());
+        btnSair.addActionListener((e) -> System.exit(0));
         painel.add(titulo);
         painel.add(Box.createRigidArea(new Dimension(0, 50)));
         painel.add(btnJogar);
@@ -40,17 +53,16 @@ public class TelaMenu extends TelaBase {
         painel.add(btnCreditos);
         painel.add(Box.createRigidArea(new Dimension(0, 15)));
         painel.add(btnSair);
-
-        add(painel);
+        this.add(painel);
     }
 
     private void abrirTelaModoJogo() {
-        dispose();
-        SwingUtilities.invokeLater(() -> new TelaModo().setVisible(true));
+        this.dispose();
+        SwingUtilities.invokeLater(() -> (new TelaModo()).setVisible(true));
     }
 
     private void abrirTelaCreditos() {
-        dispose();
-        SwingUtilities.invokeLater(() -> new TelaCreditos().setVisible(true));
+        this.dispose();
+        SwingUtilities.invokeLater(() -> (new TelaCreditos()).setVisible(true));
     }
 }
