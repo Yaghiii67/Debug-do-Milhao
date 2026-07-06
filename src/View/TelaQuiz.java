@@ -2,16 +2,22 @@ package View;
 
 import Controller.QuizController;
 import Model.Pergunta;
-
-import javax.swing.*;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.GridLayout;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 public class TelaQuiz extends TelaBase {
-
-    private static final String[] ROTULOS = {"A", "B", "C", "D"};
-
+    private static final String[] ROTULOS = new String[]{"A", "B", "C", "D"};
     private final QuizController controller;
-
     private JLabel lblProgresso;
     private JLabel lblPontuacao;
     private JTextArea txtEnunciado;
@@ -20,138 +26,129 @@ public class TelaQuiz extends TelaBase {
     public TelaQuiz(QuizController controller) {
         super("Debug do Milhão - Jogando");
         this.controller = controller;
-        atualizarTela();
+        this.atualizarTela();
     }
 
-    @Override
     protected void montarConteudo() {
         JPanel painelTopo = new JPanel(new BorderLayout());
-        lblProgresso = new JLabel();
-        lblPontuacao = new JLabel();
-        lblProgresso.setFont(FONTE_TEXTO);
-        lblPontuacao.setFont(FONTE_TEXTO);
-        painelTopo.add(lblProgresso, BorderLayout.WEST);
-        painelTopo.add(lblPontuacao, BorderLayout.EAST);
+        painelTopo.setOpaque(false);
+        this.lblProgresso = new JLabel();
+        this.lblPontuacao = new JLabel();
+        this.lblProgresso.setFont(FONTE_TEXTO);
+        this.lblPontuacao.setFont(FONTE_TEXTO);
+        painelTopo.add(this.lblProgresso, "West");
+        painelTopo.add(this.lblPontuacao, "East");
         painelTopo.setBorder(BorderFactory.createEmptyBorder(15, 20, 15, 20));
-
-        txtEnunciado = new JTextArea();
-        txtEnunciado.setFont(FONTE_TITULO.deriveFont(20f));
-        txtEnunciado.setLineWrap(true);
-        txtEnunciado.setWrapStyleWord(true);
-        txtEnunciado.setEditable(false);
-        txtEnunciado.setFocusable(false);
-        txtEnunciado.setBackground(getBackground());
-        txtEnunciado.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
-
-        JScrollPane scrollEnunciado = new JScrollPane(txtEnunciado);
+        this.txtEnunciado = new JTextArea();
+        this.txtEnunciado.setFont(FONTE_TITULO.deriveFont(20.0F));
+        this.txtEnunciado.setLineWrap(true);
+        this.txtEnunciado.setWrapStyleWord(true);
+        this.txtEnunciado.setEditable(false);
+        this.txtEnunciado.setFocusable(false);
+        this.txtEnunciado.setOpaque(false);
+        this.txtEnunciado.setForeground(Color.WHITE);
+        this.txtEnunciado.setBorder(BorderFactory.createEmptyBorder(10, 20, 20, 20));
+        JScrollPane scrollEnunciado = new JScrollPane(this.txtEnunciado);
         scrollEnunciado.setBorder(BorderFactory.createEmptyBorder());
         scrollEnunciado.setOpaque(false);
         scrollEnunciado.getViewport().setOpaque(false);
-        scrollEnunciado.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-
+        scrollEnunciado.setVerticalScrollBarPolicy(20);
         JPanel painelAlternativas = new JPanel(new GridLayout(4, 1, 10, 10));
+        painelAlternativas.setOpaque(false);
         painelAlternativas.setBorder(BorderFactory.createEmptyBorder(10, 30, 30, 30));
+        this.botoesAlternativas = new JButton[4];
 
-        botoesAlternativas = new JButton[4];
-        for (int i = 0; i < 4; i++) {
+        for(int i = 0; i < 4; ++i) {
             JButton botao = new JButton();
             botao.setFont(FONTE_BOTAO);
-            botao.setHorizontalAlignment(SwingConstants.LEFT);
-            final int indice = i;
-            botao.addActionListener(e -> selecionarAlternativa(indice));
-            botoesAlternativas[i] = botao;
+            botao.setHorizontalAlignment(2);
+            botao.addActionListener((e) -> this.selecionarAlternativa(i));
+            this.botoesAlternativas[i] = botao;
             painelAlternativas.add(botao);
         }
 
-        setLayout(new BorderLayout());
-        add(painelTopo, BorderLayout.NORTH);
-        add(scrollEnunciado, BorderLayout.CENTER);
-        add(painelAlternativas, BorderLayout.SOUTH);
+        this.setLayout(new BorderLayout());
+        this.add(painelTopo, "North");
+        this.add(scrollEnunciado, "Center");
+        this.add(painelAlternativas, "South");
     }
 
     private void atualizarTela() {
-        if (!controller.existeProximaPergunta()) {
-            finalizarQuiz();
-            return;
-        }
+        if (!this.controller.existeProximaPergunta()) {
+            this.finalizarQuiz();
+        } else {
+            Pergunta atual = this.controller.obterPerguntaAtual();
+            JLabel var10000 = this.lblProgresso;
+            int var10001 = this.controller.getNumeroPerguntaAtual();
+            var10000.setText("Pergunta " + var10001 + " de " + this.controller.getTotalPerguntas());
+            this.lblPontuacao.setText(this.montarTextoPontuacao());
+            this.txtEnunciado.setText(atual.getEnunciado());
+            String[] alternativas = atual.getAlternativas();
+            int quantidade = Math.min(4, alternativas.length);
 
-        Pergunta atual = controller.obterPerguntaAtual();
-        lblProgresso.setText("Pergunta " + controller.getNumeroPerguntaAtual() + " de " + controller.getTotalPerguntas());
-        lblPontuacao.setText(montarTextoPontuacao());
-        txtEnunciado.setText(atual.getEnunciado());
+            for(int i = 0; i < quantidade; ++i) {
+                JButton var6 = this.botoesAlternativas[i];
+                String var7 = ROTULOS[i];
+                var6.setText(var7 + ")  " + alternativas[i]);
+                this.botoesAlternativas[i].setEnabled(true);
+                this.botoesAlternativas[i].setVisible(true);
+            }
 
-        String[] alternativas = atual.getAlternativas();
-        int quantidade = Math.min(4, alternativas.length);
-        for (int i = 0; i < quantidade; i++) {
-            botoesAlternativas[i].setText(ROTULOS[i] + ")  " + alternativas[i]);
-            botoesAlternativas[i].setEnabled(true);
-            botoesAlternativas[i].setVisible(true);
-        }
-        for (int i = quantidade; i < 4; i++) {
-            botoesAlternativas[i].setVisible(false);
+            for(int i = quantidade; i < 4; ++i) {
+                this.botoesAlternativas[i].setVisible(false);
+            }
+
         }
     }
 
     private String montarTextoPontuacao() {
-        if (controller.getNumeroJogadores() == 1) {
-            return "Pontuação: " + controller.getPontuacao(0);
+        if (this.controller.getNumeroJogadores() == 1) {
+            return "Pontuação: " + this.controller.getPontuacao(0);
+        } else {
+            int vez = this.controller.getJogadorDaVez();
+            return String.format("Vez: %s  |  %s: %d   %s: %d", this.controller.getNomeJogador(vez - 1), this.controller.getNomeJogador(0), this.controller.getPontuacao(0), this.controller.getNomeJogador(1), this.controller.getPontuacao(1));
         }
-
-        int vez = controller.getJogadorDaVez(); // 1 ou 2
-        return String.format("Vez: %s  |  %s: %d   %s: %d",
-                controller.getNomeJogador(vez - 1),
-                controller.getNomeJogador(0), controller.getPontuacao(0),
-                controller.getNomeJogador(1), controller.getPontuacao(1));
     }
 
     private void selecionarAlternativa(int indice) {
-        setBotoesHabilitados(false);
-
-        Pergunta perguntaRespondida = controller.obterPerguntaAtual();
-        boolean acertou = controller.responder(indice);
+        this.setBotoesHabilitados(false);
+        Pergunta perguntaRespondida = this.controller.obterPerguntaAtual();
+        boolean acertou = this.controller.responder(indice);
         String explicacao = perguntaRespondida.getExplicacao(indice);
-
         String titulo = acertou ? "Você acertou!" : "Você errou.";
-
         JTextArea areaMensagem = new JTextArea(explicacao != null ? explicacao : "");
         areaMensagem.setEditable(false);
         areaMensagem.setFocusable(false);
         areaMensagem.setLineWrap(true);
         areaMensagem.setWrapStyleWord(true);
         areaMensagem.setFont(FONTE_TEXTO);
-        areaMensagem.setBackground(getBackground());
+        areaMensagem.setBackground(this.getBackground());
         areaMensagem.setPreferredSize(new Dimension(320, 100));
-
-        JOptionPane.showMessageDialog(this, areaMensagem, titulo, JOptionPane.INFORMATION_MESSAGE);
-
-        atualizarTela();
+        JOptionPane.showMessageDialog(this, areaMensagem, titulo, 1);
+        this.atualizarTela();
     }
 
     private void setBotoesHabilitados(boolean habilitado) {
-        for (JButton botao : botoesAlternativas) {
+        for(JButton botao : this.botoesAlternativas) {
             botao.setEnabled(habilitado);
         }
+
     }
 
     private void finalizarQuiz() {
-        int total = controller.getTotalPerguntas();
+        int total = this.controller.getTotalPerguntas();
         StringBuilder resultado = new StringBuilder("Quiz finalizado!\n");
-
-        if (controller.getNumeroJogadores() == 1) {
-            resultado.append("Você acertou ").append(controller.getPontuacao(0))
-                    .append(" de ").append(total).append(" perguntas.");
+        if (this.controller.getNumeroJogadores() == 1) {
+            resultado.append("Você acertou ").append(this.controller.getPontuacao(0)).append(" de ").append(total).append(" perguntas.");
         } else {
-            for (int i = 0; i < controller.getNumeroJogadores(); i++) {
-                resultado.append(controller.getNomeJogador(i)).append(": ")
-                        .append(controller.getPontuacao(i)).append(" pontos\n");
+            for(int i = 0; i < this.controller.getNumeroJogadores(); ++i) {
+                resultado.append(this.controller.getNomeJogador(i)).append(": ").append(this.controller.getPontuacao(i)).append(" pontos\n");
             }
         }
 
-        controller.salvarResultado();
-
-        JOptionPane.showMessageDialog(this, resultado.toString(), "Fim de jogo", JOptionPane.INFORMATION_MESSAGE);
-
-        dispose();
-        SwingUtilities.invokeLater(() -> new TelaMenu().setVisible(true));
+        this.controller.salvarResultado();
+        JOptionPane.showMessageDialog(this, resultado.toString(), "Fim de jogo", 1);
+        this.dispose();
+        SwingUtilities.invokeLater(() -> (new TelaMenu()).setVisible(true));
     }
 }
