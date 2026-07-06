@@ -6,7 +6,7 @@ import java.sql.SQLException;
 
 public class Conexao {
 
-    private static final String URL = "jdbc:mysql://127.0.0.1:3306/DebugdoMilhaoBD";
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/DebugdoMilhaoBanco";
     private static final String USUARIO = "root";
     private static final String SENHA = "Hy.2006";
 
