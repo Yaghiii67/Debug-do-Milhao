@@ -1,4 +1,4 @@
-package View;
+package ViewVisual;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,6 +15,16 @@ public abstract class TelaBase extends JFrame {
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
+
+        ImageIcon imagem = new ImageIcon(
+                getClass().getResource("/imagens/FUNDO.png"));
+
+        JLabel fundo = new JLabel(imagem);
+
+        fundo.setLayout(new BorderLayout());
+
+        setContentPane(fundo);
+
 
         montarConteudo();
     }
