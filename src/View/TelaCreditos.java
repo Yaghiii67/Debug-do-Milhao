@@ -1,54 +1,48 @@
 package View;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.Dimension;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextArea;
+import javax.swing.SwingUtilities;
 
 public class TelaCreditos extends TelaBase {
-
     public TelaCreditos() {
         super("Debug do Milhão - Créditos");
     }
 
-    @Override
     protected void montarConteudo() {
         JPanel painel = new JPanel();
-        painel.setLayout(new BoxLayout(painel, BoxLayout.Y_AXIS));
+        painel.setLayout(new BoxLayout(painel, 1));
         painel.setBorder(BorderFactory.createEmptyBorder(50, 50, 50, 50));
-
         JLabel titulo = new JLabel("Créditos");
         titulo.setFont(FONTE_TITULO);
-        titulo.setAlignmentX(Component.CENTER_ALIGNMENT);
-
-        JTextArea texto = new JTextArea(
-                "Criadores:\n\n" +
-                        "Fabio Henrique Santos da Silva\n" +
-                        "Henrique Dourado da Silva\n" +
-                        "Hugo Yaghi do Nascimento Marreiros\n" +
-                        "Victor Gabriel Freitas de Carvalho\n"
-        );
+        titulo.setAlignmentX(0.5F);
+        JTextArea texto = new JTextArea("Criadores:\n\nFabio Henrique Santos da Silva\nHenrique Dourado da Silva\nHugo Yaghi do Nascimento Marreiros\nVictor Gabriel Freitas de Carvalho\n");
         texto.setFont(FONTE_TEXTO);
         texto.setEditable(false);
         texto.setFocusable(false);
         texto.setLineWrap(true);
         texto.setWrapStyleWord(true);
-        texto.setBackground(getBackground());
-        texto.setAlignmentX(Component.CENTER_ALIGNMENT);
-
+        texto.setBackground(this.getBackground());
+        texto.setAlignmentX(0.5F);
         JButton btnVoltar = new JButton("Voltar");
         btnVoltar.setFont(FONTE_BOTAO);
-        btnVoltar.setAlignmentX(Component.CENTER_ALIGNMENT);
+        btnVoltar.setAlignmentX(0.5F);
         btnVoltar.setMaximumSize(new Dimension(200, 40));
-        btnVoltar.addActionListener(e -> {
-            dispose();
-            SwingUtilities.invokeLater(() -> new TelaMenu().setVisible(true));
+        btnVoltar.addActionListener((e) -> {
+            this.dispose();
+            SwingUtilities.invokeLater(() -> (new TelaMenu()).setVisible(true));
         });
-
         painel.add(titulo);
         painel.add(Box.createRigidArea(new Dimension(0, 20)));
         painel.add(texto);
         painel.add(Box.createRigidArea(new Dimension(0, 30)));
         painel.add(btnVoltar);
-
-        add(painel);
+        this.add(painel);
     }
 }
