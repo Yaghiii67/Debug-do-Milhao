@@ -45,12 +45,12 @@ public class TelaMenu extends TelaBase {
     }
 
     private void abrirTelaModoJogo() {
-        dispose(); // fecha o menu
+        dispose();
         SwingUtilities.invokeLater(() -> new TelaModo().setVisible(true));
     }
 
     private void abrirTelaCreditos() {
-        dispose(); // fecha o menu
+        dispose();
         SwingUtilities.invokeLater(() -> new TelaCreditos().setVisible(true));
     }
 }
